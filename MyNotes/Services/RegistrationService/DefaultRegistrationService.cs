@@ -6,20 +6,20 @@ namespace MyNotes.Services.RegistrationService;
 
 public class DefaultRegistrationService : IRegistrationService
 {
-    public async Task<Boolean> Registrate(Man man,ApplicationContext db)
+    public async Task<Boolean> Registrate(DtoUser dtoUser,ApplicationContext db)
     {
-        User? buff = await db.Users.FirstOrDefaultAsync(p=> p.Login == man.Login);
-        if (buff is null)
+        User? buff = await db.Users.FirstOrDefaultAsync(p=> p.Login == dtoUser.Login);
+        
+        if (buff is not null)
+            return false;
+       
+        User newUser = new User()
         {
-            User newUser = new User()
-            {
-                Login = man.Login,
-                Password = man.Password
-            };
-            await db.Users.AddAsync(newUser);
-            db.SaveChanges();
-            return true;
-        }
-        return false;
+            Login = dtoUser.Login,
+            Password = dtoUser.Password
+        };
+        await db.Users.AddAsync(newUser);
+        db.SaveChanges();
+        return true;
     }
 }

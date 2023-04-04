@@ -2,7 +2,7 @@
 using MyNotes.Context;
 using MyNotes.Models;
 
-namespace MyNotes.Services;
+namespace MyNotes.Services.ChangeLoginServices;
 
 public class DefaultChangeLoginService : IChangeLogin
 {
@@ -14,6 +14,7 @@ public class DefaultChangeLoginService : IChangeLogin
             if (buff is not null)
                 return false;
             db.Users.Where(p => p.Login == login).FirstOrDefault().Login = newLogin;
+            await db.SaveChangesAsync();
             return true;
         }
         catch (Exception e)

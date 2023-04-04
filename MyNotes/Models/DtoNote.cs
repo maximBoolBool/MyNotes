@@ -1,6 +1,6 @@
 ﻿namespace MyNotes.Models;
 
-public class FrontNote
+public class DtoNote
 {
     public int Id { get; set; }
     public string Head { get; set; }

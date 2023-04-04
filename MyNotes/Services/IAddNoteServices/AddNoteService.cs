@@ -5,7 +5,7 @@ namespace MyNotes.Services.IAddNoteServices;
 
 public class AddNoteService : IAddNoteService
 {
-    public async  Task<bool> AddNote(ApplicationContext db,Note note,string login)
+    public async Task<bool> AddNote(ApplicationContext db,Note note,string login)
     {
         try
         {

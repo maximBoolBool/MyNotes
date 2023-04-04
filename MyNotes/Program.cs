@@ -5,6 +5,8 @@ using MyNotes.Context;
 using MyNotes.Services;
 using MyNotes.Services.AuthenticationServices;
 using MyNotes.Services.AuthorizationServices;
+using MyNotes.Services.ChangeLoginServices;
+using MyNotes.Services.ChangeNoteServices;
 using MyNotes.Services.ChangePasswordServices;
 using MyNotes.Services.GetNoteServices;
 using MyNotes.Services.IAddNoteServices;
@@ -23,6 +25,7 @@ builder.Services.AddTransient<IAddNoteService, AddNoteService>();
 builder.Services.AddTransient<IChangePasswordService, DefaultChangePasswordService>();
 builder.Services.AddTransient<IChangeLogin, DefaultChangeLoginService>();
 builder.Services.AddTransient<IGetNotesService, GetNoteService>();
+builder.Services.AddTransient<IChangeNoteService, DefaultChangeNoteService>();
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie();
@@ -48,6 +51,8 @@ app.MapControllerRoute(name:"default",
     pattern:"{controller=Change}/{action=ChangeLogin}");
 app.MapControllerRoute(name: "default",
     pattern: "{controller=Change}/{action=ChangePassword}");
+app.MapControllerRoute(name:"default",
+    pattern:"{controller=Base}/{action=UpdateNote}");
 
 
 app.Run();

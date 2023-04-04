@@ -5,5 +5,5 @@ namespace MyNotes.Services.AuthorizationServices;
 
 public interface IAuthorizationService
 {
-    public  Task<ClaimsPrincipal> Authorize(Man man);
+    public  Task<ClaimsPrincipal> Authorize(DtoUser dtoUser);
 }

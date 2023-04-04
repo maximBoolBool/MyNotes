@@ -32,13 +32,13 @@ public class MainController : Controller
 
     //check
     [HttpPost]
-    public IActionResult Registrate(Man man)
+    public IActionResult Registrate(DtoUser dtoUser)
     {
-        bool flag = registrationService.Registrate(man, db).Result;
+        bool flag = registrationService.Registrate(dtoUser, db).Result;
 
         if (flag)
         {
-            var claims = authorizationService.Authorize(man).Result;
+            var claims = authorizationService.Authorize(dtoUser).Result;
             HttpContext.SignInAsync(claims);
         }
         return Json(new List<bool>()
@@ -50,13 +50,13 @@ public class MainController : Controller
 
     //check
     [HttpPost]
-    public IActionResult Authenticate(Man man)
+    public IActionResult Authenticate(DtoUser dtoUser)
     {
-        bool flag = authenticationService.Authenticate(man, db).Result;
+        bool flag = authenticationService.Authenticate(dtoUser, db).Result;
 
         if (flag)
         {
-            var claims = authorizationService.Authorize(man).Result;
+            var claims = authorizationService.Authorize(dtoUser).Result;
             HttpContext.SignInAsync(claims);
         }
 

@@ -32,6 +32,6 @@ public class ChangeController : Controller
     public IActionResult ChangeLogin(string newLogin,string password)
     {
         string? nameBuff = this.User.Claims.First(p => p.Type == ClaimTypes.Name ).Value;
-        return  Json(changeLogin.ChangeLogin(db, newLogin, nameBuff,password));
+        return  Json(changeLogin.ChangeLogin(db, newLogin, nameBuff,password).Result);
     }
 }

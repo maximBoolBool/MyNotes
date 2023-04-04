@@ -14,8 +14,9 @@ public class DefaultChangePasswordService : IChangePasswordService
             {
                 db.Users.Where(p => p.Login == login).FirstOrDefault().Password = newPassword;
                 await db.SaveChangesAsync();
+                return true;
             }
-            return true;
+            return false;
         }
         catch (Exception e)
         {

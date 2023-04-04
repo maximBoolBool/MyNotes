@@ -6,6 +6,6 @@ namespace MyNotes.Services.GetNoteServices;
 
 public interface IGetNotesService
 {
-    public Task<List<FrontNote>> GetNotes(ApplicationContext db, string login);
+    public Task<List<DtoNote>> GetNotes(ApplicationContext db, string login);
   
 }

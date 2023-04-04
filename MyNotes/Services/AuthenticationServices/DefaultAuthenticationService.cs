@@ -6,18 +6,10 @@ namespace MyNotes.Services.AuthenticationServices;
 
 public class DefaultAuthenticationService : IAuthenticationService
 {
-    public async Task<bool> Authenticate(Man man,ApplicationContext db)
+    public async Task<bool> Authenticate(DtoUser dtoUser,ApplicationContext db)
     {
-        User? user = await db.Users.FirstOrDefaultAsync(p=> p.Login==man.Login);
-        {
-            if (user is not null)
-            {
-                if (man.Password.Equals(user.Password))
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
+        User? user = await db.Users.FirstOrDefaultAsync(p=> p.Login==dtoUser.Login);
+
+        return user is not null && dtoUser.Password.Equals(user.Password);
     }
 }

@@ -6,11 +6,11 @@ namespace MyNotes.Services.AuthorizationServices;
 
 public class AuthorizationService : IAuthorizationService
 {
-    public async Task<ClaimsPrincipal> Authorize( Man person)
+    public async Task<ClaimsPrincipal> Authorize( DtoUser person)
     {
         Claim nameClaim = new Claim(ClaimTypes.Name,person.Login);
         Claim passwordClaim = new Claim("Password",person.Password);
-        List<Claim> claims = new List<Claim>()
+        var claims = new List<Claim>()
         {
             nameClaim,
             passwordClaim

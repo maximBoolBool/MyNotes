@@ -5,5 +5,5 @@ namespace MyNotes.Services.AuthenticationServices;
 
 public interface IAuthenticationService
 {
-    public Task<bool> Authenticate(Man man, ApplicationContext db);
+    public Task<bool> Authenticate(DtoUser dtoUser, ApplicationContext db);
 }

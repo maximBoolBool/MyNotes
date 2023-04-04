@@ -5,5 +5,5 @@ namespace MyNotes.Services.RegistrationService;
 
 public interface IRegistrationService
 {
-    public Task<Boolean> Registrate(Man man,ApplicationContext db);
+    public Task<Boolean> Registrate(DtoUser dtoUser,ApplicationContext db);
 }
