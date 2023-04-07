@@ -1,6 +1,6 @@
 ﻿namespace MyNotes.Controllers;
 
-public class MainController
+public class AccountController
 {
     
 }
