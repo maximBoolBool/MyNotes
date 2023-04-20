@@ -13,25 +13,29 @@ public class DefaultNotesWorkerServices : INotesWorkerServices
         db = _db;
     }
     
-    public async Task<bool> AddNewNote(DtoNote newNote,string userLogin)
+    public async Task<DtoNote> AddNewNote(DtoNote newNote,string userLogin)
     {
 
         User? userBuff = await db.Users.FirstOrDefaultAsync(p=> p.Login.Equals(userLogin));
 
-        if (userBuff is null)
-            return false;
-        
         userBuff.Notes.Add(new Note()
         {
             Owner = userBuff,
             Head = newNote.Head,
             Body = newNote.Body
         });
-        
         db.Users.Update(userBuff);
         await db.SaveChangesAsync();
 
-        return true;
+        var buff = userBuff.Notes.Last();
+        var response = new DtoNote()
+        {
+            Id = buff.Id,
+            Head = buff.Head,
+            Body = buff.Body
+        };
+
+        return response;
     }
     
     public async Task<bool> UpdateNote(DtoNote updateNote)
@@ -89,7 +93,5 @@ public class DefaultNotesWorkerServices : INotesWorkerServices
         }
 
         return response;
-
     }
-
 }

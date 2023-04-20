@@ -1,5 +1,8 @@
-﻿using System.Security.Claims;
+﻿using System.Data;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using MyNotes.Context;
 using MyNotes.Models;
 
@@ -34,26 +37,49 @@ public class DefaultUserAcountWorkerService : IUserAcountWorker
         return true;
     }
     
-    public async Task<bool> Authenticate(DtoUser dtoUser)
+    public async Task<List<DtoNote>?> Authenticate(DtoUser dtoUser)
     {
         User buff = await db.Users.FirstAsync(p=> p.Login.Equals(dtoUser.Login) && p.Password.Equals(dtoUser.Password));
 
-        return (buff is null) ? false : true;
+        if (buff is null)
+            return null;
+        
+        List<Note> notesBuff = await db.Notes.Where(p => p.UserId.Equals(buff.Id)).ToListAsync();
+
+        List<DtoNote> notes = new List<DtoNote>();
+
+        foreach (var note in notesBuff)
+        {
+            notes.Add(new ()
+            {
+                Id = note.Id,
+                Head = note.Head,
+                Body = note.Body
+            });
+        }
+        return notes;
+
     }
 
-    public async Task<ClaimsPrincipal> Authorize(DtoUser dtoUser)
+    public async Task<string> Authorize(DtoUser dtoUser)
     {
         List<Claim> claims = new List<Claim>()
         {
-            new Claim(ClaimTypes.Name, dtoUser.Login),
-            new Claim("Password", dtoUser.Password),
+            new ("Login", dtoUser.Login),
+            new ("Password", dtoUser.Password),
         };
 
-        ClaimsIdentity idClaim = new ClaimsIdentity(claims,"Cookies");
+        JwtSecurityToken jwt = new JwtSecurityToken(
+            issuer: AuthOptions.ISSUER,
+            audience: AuthOptions.AUDINCE,
+            claims : claims,
+            expires: DateTime.UtcNow.Add(TimeSpan.FromDays(30)),
+            signingCredentials:new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(),SecurityAlgorithms.HmacSha256)
+        );
 
-        ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(idClaim);
+        JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
 
-        return claimsPrincipal;
+        return handler.WriteToken(jwt);
     }
 
     public async Task<bool> ChangePassword(string newPassword,string oldPassword,string login)

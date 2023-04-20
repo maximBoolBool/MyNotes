@@ -1,28 +1,29 @@
 ﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
 using MyNotes.Models;
 using MyNotes.Models.ResponseClasses;
+using MyNotes.Services.IdentytiUserServices;
+
 namespace MyNotes.Controllers;
 
 public class NoteController : Controller
 {
     private INotesWorkerServices noteService;
 
-    public NoteController(INotesWorkerServices _noteService)
+    private IIdentityUserService identityUserService;
+    public NoteController(INotesWorkerServices _noteService,IIdentityUserService _identityUserService)
     {
         noteService = _noteService;
+        identityUserService = _identityUserService;
     }
 
     [HttpGet]
     [Route("Note/GetNotes")]
     public async Task<IActionResult> GetNotes()
     {
-        string? name =  User.Claims.FirstOrDefault(p=>p.Type.Equals(ClaimTypes.Name) ).Value;
-        
-        List<DtoNote>? notes = await noteService.GetNotes(name);
-
-        return Json(new ResponseClass<List<DtoNote>>((notes is null)? new List<DtoNote>() : notes));
+        string? name = User.Claims.FirstOrDefault(cl => cl.Type.Equals(ClaimTypes.Name)).Value;
+        return Json((name is null)? "sdfsdf" : name );
     }
 
     [HttpPost]
@@ -44,15 +45,19 @@ public class NoteController : Controller
         return Json(new ResponseClass<bool>(flag));
     }
 
-
     [HttpPost]
     [Route("Note/AddNewNote")]
     public async Task<IActionResult> AddNewNote(DtoNote newNote)
     {
-        string? name =  User.Claims.FirstOrDefault(p=>p.Type.Equals(ClaimTypes.Name) ).Value;
+        Console.WriteLine($"Noten\n{newNote.Head}\n{newNote.Body}");
 
-        bool flag = await noteService.AddNewNote(newNote,name);
 
-        return Json(new ResponseClass<bool>(flag));
+        string token = HttpContext.Request.Headers["auth"];
+
+        string name = await identityUserService.GetLogin(token);
+        
+        var flag = await noteService.AddNewNote(newNote,name);
+
+        return Json(flag);
     }
 }
